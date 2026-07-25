@@ -1,0 +1,22 @@
+services:
+  server:
+    build: ./server
+    ports:
+      - "3001:3001"
+    environment:
+      - DATABASE_URL=file:./dev.db
+      - JWT_SECRET=${JWT_SECRET:-change-me-in-production}
+      - PORT=3001
+      - NODE_ENV=production
+    volumes:
+      - ./server/prisma/dev.db:/app/prisma/dev.db
+      - ./server/invoices:/app/invoices
+    restart: unless-stopped
+
+  client:
+    build: ./client
+    ports:
+      - "80:80"
+    depends_on:
+      - server
+    restart: unless-stopped
