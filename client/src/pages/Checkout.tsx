@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useCartStore } from '../stores/cartStore';
 import { orderApi } from '../api/orders';
+import { promoApi } from '../api/promo';
 import { useState } from 'react';
 
 export default function Checkout() {
@@ -10,11 +11,42 @@ export default function Checkout() {
   const [invoiceUrl, setInvoiceUrl] = useState<string | null>(null);
   const [error, setError] = useState('');
 
+  // Promo code state
+  const [promoCode, setPromoCode] = useState('');
+  const [promoDiscount, setPromoDiscount] = useState(0);
+  const [promoApplied, setPromoApplied] = useState<string | null>(null);
+  const [promoError, setPromoError] = useState('');
+  const [promoLoading, setPromoLoading] = useState(false);
+
+  const handleApplyPromo = async () => {
+    if (!promoCode.trim()) return;
+    setPromoLoading(true);
+    setPromoError('');
+    try {
+      const result = await promoApi.validate(promoCode.trim(), total());
+      setPromoDiscount(result.discount);
+      setPromoApplied(result.code);
+      setPromoCode('');
+    } catch (e: any) {
+      setPromoError(e.response?.data?.error || 'Code invalide');
+    } finally {
+      setPromoLoading(false);
+    }
+  };
+
+  const handleRemovePromo = () => {
+    setPromoDiscount(0);
+    setPromoApplied(null);
+    setPromoError('');
+  };
+
+  const finalTotal = total() - promoDiscount;
+
   const handleCheckout = async () => {
     setLoading(true);
     setError('');
     try {
-      const { data } = await orderApi.checkout();
+      const { data } = await orderApi.checkout(promoApplied || undefined);
       setInvoiceUrl(data.invoiceUrl || null);
       fetchCart();
     } catch (e: any) {
@@ -129,9 +161,60 @@ export default function Checkout() {
             <span className="font-medium text-charcoal">{(item.product.price * item.quantity).toFixed(2)} &euro;</span>
           </div>
         ))}
-        <div className="border-t border-gray-100 pt-4 flex justify-between">
-          <span className="text-[11px] tracking-[0.08em] uppercase text-gray-400 font-medium">Total</span>
-          <span className="text-lg font-medium text-charcoal">{total().toFixed(2)} &euro;</span>
+
+        {/* Promo code section */}
+        <div className="border-t border-gray-100 pt-4">
+          {promoApplied ? (
+            <div className="flex items-center justify-between bg-green-50 border border-green-200 rounded-xl px-4 py-3">
+              <div className="flex items-center gap-2">
+                <svg className="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+                <span className="text-[13px] font-medium text-green-700">{promoApplied}</span>
+                <span className="text-[12px] text-green-600">-{promoDiscount.toFixed(2)} €</span>
+              </div>
+              <button onClick={handleRemovePromo} className="text-[12px] text-green-600 hover:text-green-800 font-medium">Retirer</button>
+            </div>
+          ) : (
+            <div>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={promoCode}
+                  onChange={e => { setPromoCode(e.target.value.toUpperCase()); setPromoError(''); }}
+                  placeholder="Code promo"
+                  className="flex-1 px-4 py-2.5 bg-cream border border-gray-200 rounded-xl text-[13px] focus:ring-1 focus:ring-champagne/40 outline-none transition-all uppercase tracking-wider"
+                  onKeyDown={e => e.key === 'Enter' && handleApplyPromo()}
+                />
+                <button
+                  onClick={handleApplyPromo}
+                  disabled={promoLoading || !promoCode.trim()}
+                  className="px-5 py-2.5 bg-charcoal text-white rounded-xl text-[12px] tracking-[0.06em] uppercase font-medium hover:bg-charcoal/90 transition-all disabled:opacity-40"
+                >
+                  {promoLoading ? '...' : 'Appliquer'}
+                </button>
+              </div>
+              {promoError && <p className="text-[12px] text-red-500 mt-2 font-light">{promoError}</p>}
+            </div>
+          )}
+        </div>
+
+        {/* Totals */}
+        <div className="border-t border-gray-100 pt-4 space-y-2">
+          <div className="flex justify-between text-[13px]">
+            <span className="text-gray-400 font-light">Sous-total</span>
+            <span className="text-gray-600">{total().toFixed(2)} €</span>
+          </div>
+          {promoDiscount > 0 && (
+            <div className="flex justify-between text-[13px]">
+              <span className="text-green-600 font-light">Réduction</span>
+              <span className="text-green-600">-{promoDiscount.toFixed(2)} €</span>
+            </div>
+          )}
+          <div className="flex justify-between pt-2 border-t border-gray-100">
+            <span className="text-[11px] tracking-[0.08em] uppercase text-gray-400 font-medium">Total</span>
+            <span className="text-lg font-medium text-charcoal">{finalTotal.toFixed(2)} €</span>
+          </div>
         </div>
       </div>
 
@@ -158,7 +241,7 @@ export default function Checkout() {
         disabled={loading}
         className="w-full mt-6 bg-charcoal text-white py-3.5 rounded-full text-[12px] tracking-[0.08em] uppercase font-medium hover:bg-charcoal/90 transition-all duration-300 disabled:opacity-50"
       >
-        {loading ? 'Traitement en cours...' : `Confirmer et payer ${total().toFixed(2)} €`}
+        {loading ? 'Traitement en cours...' : `Confirmer et payer ${finalTotal.toFixed(2)} €`}
       </button>
 
       <p className="text-center text-[11px] text-gray-400 font-light mt-4">
