@@ -48,7 +48,7 @@ export default function ProductDetail() {
 
   const handleAddToCart = async () => {
     for (let i = 0; i < quantity; i++) {
-      await addItem(product.id, selectedSize || product.sizes[0], selectedColor || product.colors[0]);
+      await addItem(product.id, selectedSize || product.sizes[0], selectedColor || product.colors[0], product);
     }
     setAdded(true);
     showToast(`${quantity} article${quantity > 1 ? 's' : ''} ajouté${quantity > 1 ? 's' : ''} au panier`, 'cart');

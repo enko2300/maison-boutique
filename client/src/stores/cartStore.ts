@@ -37,7 +37,7 @@ interface CartState {
   loading: boolean;
   isLoggedIn: boolean;
   fetch: () => Promise<void>;
-  addItem: (productId: string, size?: string, color?: string) => Promise<void>;
+  addItem: (productId: string, size?: string, color?: string, product?: Product) => Promise<void>;
   updateQuantity: (id: string, quantity: number) => Promise<void>;
   removeItem: (id: string) => Promise<void>;
   clear: () => Promise<void>;
@@ -70,37 +70,48 @@ export const useCartStore = create<CartState>((set, get) => ({
     }
   },
 
-  addItem: async (productId, size, color) => {
+  addItem: async (productId, size, color, product?) => {
     if (get().isLoggedIn) {
-      // Logged in — add to server
-      const { data } = await cartApi.add({ productId, quantity: 1, size, color });
+      // Optimistic: increment count immediately
       const items = get().items;
-      const idx = items.findIndex(i => i.id === data.id);
-      if (idx >= 0) {
-        const updated = [...items];
-        updated[idx] = data;
-        set({ items: updated });
-      } else {
-        set({ items: [...items, data] });
+      const existing = items.find(i => i.productId === productId && i.size === (size || null) && i.color === (color || null));
+      if (existing) {
+        set({ items: items.map(i => i.id === existing.id ? { ...i, quantity: i.quantity + 1 } : i) });
+      }
+      // Then sync with server
+      try {
+        const { data } = await cartApi.add({ productId, quantity: 1, size, color });
+        const fresh = get().items;
+        const idx = fresh.findIndex(i => i.id === data.id);
+        if (idx >= 0) {
+          const updated = [...fresh];
+          updated[idx] = data;
+          set({ items: updated });
+        } else {
+          set({ items: [...fresh, data] });
+        }
+      } catch {
+        // Revert on error
+        await get().fetch();
       }
     } else {
-      // Not logged in — add to local cart
+      // Not logged in — add to local cart instantly
       const local = get().localItems;
-      const existing = local.find(i => i.productId === productId && i.size === size && i.color === color);
+      const existingIdx = local.findIndex(i => i.productId === productId && i.size === (size || null) && i.color === (color || null));
 
-      // Fetch product details for display
-      const { data: product } = await productApi.detail(productId);
-
-      if (existing) {
-        const updated = local.map(i =>
-          i.productId === productId && i.size === size && i.color === color
-            ? { ...i, quantity: i.quantity + 1 }
-            : i
-        );
+      if (existingIdx >= 0) {
+        const updated = [...local];
+        updated[existingIdx] = { ...updated[existingIdx], quantity: updated[existingIdx].quantity + 1 };
         set({ localItems: updated });
         saveLocalCart(updated);
       } else {
-        const newItem: LocalCartItem = { productId, quantity: 1, size: size || null, color: color || null, product };
+        // Use provided product or fetch it
+        let prod = product;
+        if (!prod) {
+          const { data } = await productApi.detail(productId);
+          prod = data;
+        }
+        const newItem: LocalCartItem = { productId, quantity: 1, size: size || null, color: color || null, product: prod };
         const updated = [...local, newItem];
         set({ localItems: updated });
         saveLocalCart(updated);

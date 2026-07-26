@@ -28,8 +28,7 @@ export default function QuickView({ product, onClose }: Props) {
   if (!product) return null;
 
   const handleAdd = async () => {
-    if (!user) { onClose(); return navigate('/login'); }
-    await addItem(product.id, selectedSize || product.sizes[0], selectedColor || product.colors[0]);
+    await addItem(product.id, selectedSize || product.sizes[0], selectedColor || product.colors[0], product);
     setAdded(true);
     showToast('Ajouté au panier', 'cart');
     setTimeout(() => { setAdded(false); onClose(); }, 1200);

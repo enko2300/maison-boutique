@@ -1,0 +1,8 @@
+name = "bouclor-proxy"
+main = "index.ts"
+compatibility_date = "2024-01-01"
+
+[assets]
+directory = "../client/dist"
+binding = "ASSETS"
+serve_directly = true

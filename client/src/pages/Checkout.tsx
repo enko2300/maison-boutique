@@ -50,9 +50,7 @@ export default function Checkout() {
     try {
       const { data } = await orderApi.checkout(promoApplied || undefined);
       if (data.invoiceUrl) {
-        // Construct full URL for the invoice
-        const fullUrl = `https://maison-boutique-production.up.railway.app${data.invoiceUrl}`;
-        setInvoiceUrl(fullUrl);
+        setInvoiceUrl(data.invoiceUrl);
       }
       fetchCart();
     } catch (e: any) {
