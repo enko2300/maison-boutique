@@ -47,7 +47,6 @@ export default function ProductDetail() {
   );
 
   const handleAddToCart = async () => {
-    if (!user) return navigate('/login');
     for (let i = 0; i < quantity; i++) {
       await addItem(product.id, selectedSize || product.sizes[0], selectedColor || product.colors[0]);
     }

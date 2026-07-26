@@ -10,7 +10,7 @@ interface Props {
 }
 
 export default function CartDrawer({ open, onClose }: Props) {
-  const { items, fetch, total, updateQuantity, removeItem } = useCartStore();
+  const { items, localItems, fetch, total, updateQuantity, removeItem, isLoggedIn } = useCartStore();
   const { user } = useAuthStore();
   const { format } = useFormatPrice();
   const navigate = useNavigate();
@@ -27,9 +27,17 @@ export default function CartDrawer({ open, onClose }: Props) {
 
   if (!open) return null;
 
+  // Use server items if logged in, otherwise local items
+  const displayItems = isLoggedIn ? items : localItems;
+  const displayTotal = total();
+
   const handleCheckout = () => {
     onClose();
-    navigate('/checkout');
+    if (!user) {
+      navigate('/login');
+    } else {
+      navigate('/checkout');
+    }
   };
 
   return (
@@ -51,7 +59,7 @@ export default function CartDrawer({ open, onClose }: Props) {
           <div>
             <h2 className="text-[15px] font-medium text-charcoal">Panier</h2>
             <p className="text-[11px] text-gray-400 font-light mt-0.5">
-              {items.length} article{items.length !== 1 ? 's' : ''}
+              {displayItems.length} article{displayItems.length !== 1 ? 's' : ''}
             </p>
           </div>
           <button onClick={onClose} className="p-2 rounded-full hover:bg-cream transition-colors">
@@ -63,17 +71,7 @@ export default function CartDrawer({ open, onClose }: Props) {
 
         {/* Items */}
         <div className="flex-1 overflow-y-auto px-6">
-          {!user ? (
-            <div className="flex flex-col items-center justify-center h-full text-center">
-              <svg className="w-12 h-12 text-gray-200 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-              </svg>
-              <p className="text-[13px] text-gray-400 font-light mb-4">Connectez-vous pour voir votre panier</p>
-              <button onClick={() => { onClose(); navigate('/login'); }} className="px-6 py-2.5 bg-charcoal text-white rounded-full text-[12px] tracking-[0.06em] uppercase font-medium hover:bg-charcoal/90 transition">
-                Se connecter
-              </button>
-            </div>
-          ) : items.length === 0 ? (
+          {displayItems.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full text-center">
               <svg className="w-12 h-12 text-gray-200 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
@@ -85,53 +83,57 @@ export default function CartDrawer({ open, onClose }: Props) {
             </div>
           ) : (
             <div className="py-4 space-y-0 divide-y divide-gray-50">
-              {items.map(item => (
-                <div key={item.id} className="flex gap-4 py-4 first:pt-0">
-                  <div className="w-16 h-20 rounded-xl overflow-hidden bg-gray-50 shrink-0">
-                    <img src={item.product.image} alt={item.product.name} className="w-full h-full object-cover" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-start justify-between gap-2">
-                      <div className="min-w-0">
-                        <h4 className="text-[13px] font-medium text-charcoal truncate">{item.product.name}</h4>
-                        <p className="text-[11px] text-gray-400 font-light mt-0.5">
-                          {item.size && `Taille ${item.size}`}
-                          {item.size && item.color && ' · '}
-                          {item.color && item.color}
-                        </p>
-                      </div>
-                      <button onClick={() => removeItem(item.id)} className="p-1 text-gray-300 hover:text-red-500 transition-colors shrink-0">
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" /></svg>
-                      </button>
+              {displayItems.map(item => {
+                const itemId = isLoggedIn ? (item as any).id : (item as any).productId;
+                const product = item.product;
+                return (
+                  <div key={itemId} className="flex gap-4 py-4 first:pt-0">
+                    <div className="w-16 h-20 rounded-xl overflow-hidden bg-gray-50 shrink-0">
+                      <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
                     </div>
-                    <div className="flex items-center justify-between mt-2">
-                      <div className="flex items-center border border-gray-200 rounded-full">
-                        <button onClick={() => updateQuantity(item.id, item.quantity - 1)} className="w-7 h-7 flex items-center justify-center text-gray-400 hover:text-charcoal transition-colors text-sm">−</button>
-                        <span className="w-6 text-center text-[12px] font-medium text-charcoal">{item.quantity}</span>
-                        <button onClick={() => updateQuantity(item.id, item.quantity + 1)} className="w-7 h-7 flex items-center justify-center text-gray-400 hover:text-charcoal transition-colors text-sm">+</button>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="min-w-0">
+                          <h4 className="text-[13px] font-medium text-charcoal truncate">{product.name}</h4>
+                          <p className="text-[11px] text-gray-400 font-light mt-0.5">
+                            {item.size && `Taille ${item.size}`}
+                            {item.size && item.color && ' · '}
+                            {item.color && item.color}
+                          </p>
+                        </div>
+                        <button onClick={() => removeItem(itemId)} className="p-1 text-gray-300 hover:text-red-500 transition-colors shrink-0">
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" /></svg>
+                        </button>
                       </div>
-                      <p className="text-[13px] font-medium text-charcoal">{format(item.product.price * item.quantity)}</p>
+                      <div className="flex items-center justify-between mt-2">
+                        <div className="flex items-center border border-gray-200 rounded-full">
+                          <button onClick={() => updateQuantity(itemId, item.quantity - 1)} className="w-7 h-7 flex items-center justify-center text-gray-400 hover:text-charcoal transition-colors text-sm">−</button>
+                          <span className="w-6 text-center text-[12px] font-medium text-charcoal">{item.quantity}</span>
+                          <button onClick={() => updateQuantity(itemId, item.quantity + 1)} className="w-7 h-7 flex items-center justify-center text-gray-400 hover:text-charcoal transition-colors text-sm">+</button>
+                        </div>
+                        <p className="text-[13px] font-medium text-charcoal">{format(product.price * item.quantity)}</p>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>
 
         {/* Footer */}
-        {user && items.length > 0 && (
+        {displayItems.length > 0 && (
           <div className="border-t border-gray-100 px-6 py-5 space-y-4">
             <div className="flex items-center justify-between">
               <span className="text-[12px] tracking-[0.06em] uppercase text-gray-400 font-light">Sous-total</span>
-              <span className="text-lg font-medium text-charcoal">{format(total())}</span>
+              <span className="text-lg font-medium text-charcoal">{format(displayTotal)}</span>
             </div>
             <p className="text-[11px] text-gray-400 font-light">Livraison calculée à la caisse</p>
             <button
               onClick={handleCheckout}
               className="w-full bg-charcoal text-white py-3.5 rounded-full text-[12px] tracking-[0.08em] uppercase font-medium hover:bg-charcoal/90 transition-all"
             >
-              Commander
+              {user ? 'Commander' : 'Se connecter pour commander'}
             </button>
             <button
               onClick={onClose}
