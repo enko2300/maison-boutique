@@ -51,11 +51,6 @@ export default function Login() {
         <p className="text-center text-[12px] text-gray-400 mt-8 font-light">
           Pas de compte ? <Link to="/register" className="text-charcoal font-medium hover:text-champagne transition-colors">Créer un compte</Link>
         </p>
-        <div className="mt-8 p-4 bg-cream rounded-xl text-[11px] text-gray-400 font-light">
-          <p className="font-medium text-gray-500 mb-2">Comptes de test</p>
-          <p className="mb-0.5">Admin — admin@boutique.com / admin123</p>
-          <p>Client — user@boutique.com / user123</p>
-        </div>
       </div>
     </div>
   );
