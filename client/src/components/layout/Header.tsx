@@ -96,11 +96,13 @@ export default function Header({ onCartClick }: Props) {
   return (
     <>
       <div
-        className={`bg-charcoal text-center text-[11px] py-2 font-light tracking-[0.2em] uppercase text-gray-400 transition-all duration-300 overflow-hidden ${
+        className={`bg-charcoal text-center text-[11px] py-2 font-light tracking-[0.2em] uppercase transition-all duration-300 overflow-hidden ${
           scrolled ? 'h-0 py-0 opacity-0' : 'h-[32px] opacity-100'
         }`}
       >
-        Livraison offerte dès 50€ · Retours gratuits sous 30 jours
+        <span className="bg-gradient-to-r from-gray-500 via-champagne-light to-gray-500 bg-clip-text text-transparent">
+          Livraison offerte dès 50 CHF · Retours gratuits sous 30 jours
+        </span>
       </div>
 
       <header
