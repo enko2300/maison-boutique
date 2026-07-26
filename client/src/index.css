@@ -8,9 +8,12 @@
   --color-champagne-light: #E8D5B0;
   --color-cream: #FAF8F5;
   --color-charcoal: #1A1A1A;
-  --color-dark-bg: #0f0f0f;
-  --color-dark-surface: #1a1a1a;
-  --color-dark-text: #e0e0e0;
+  --color-dark-bg: #0a0a0a;
+  --color-dark-surface: #141414;
+  --color-dark-card: #1c1c1c;
+  --color-dark-border: #2a2a2a;
+  --color-dark-text: #e8e8e8;
+  --color-dark-muted: #888888;
 }
 
 body {
@@ -19,21 +22,32 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #2a2a2a;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-.dark body,
-.dark {
-  color: #e0e0e0;
+.dark body {
+  color: #e8e8e8;
+  background-color: #0a0a0a;
 }
 
-/* Custom scrollbar — luxe */
+/* Animated gradient for promo bar */
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+.animate-gradient {
+  background-size: 200% 200%;
+  animation: gradient-shift 6s ease infinite;
+}
+
+/* Custom scrollbar */
 ::-webkit-scrollbar { width: 5px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: #d4d4d4; border-radius: 10px; }
 ::-webkit-scrollbar-thumb:hover { background: #a3a3a3; }
-
-.dark ::-webkit-scrollbar-thumb { background: #444; }
-.dark ::-webkit-scrollbar-thumb:hover { background: #666; }
+.dark ::-webkit-scrollbar-thumb { background: #333; }
+.dark ::-webkit-scrollbar-thumb:hover { background: #555; }
 
 /* Dropdown */
 @keyframes dropdown-in {
@@ -63,17 +77,20 @@ body {
   animation: badge-pop 0.3s ease-out forwards;
 }
 
-/* Smooth page transitions */
+/* Toast */
+@keyframes toast-in {
+  from { opacity: 0; transform: translateY(12px) scale(0.96); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
 * {
   -webkit-tap-highlight-color: transparent;
 }
 
-/* Selection color */
 ::selection {
   background: #C9A96E33;
   color: #1A1A1A;
 }
-
 .dark ::selection {
   background: #C9A96E55;
   color: #fff;
@@ -88,12 +105,10 @@ body {
   animation: page-in 0.2s ease-out forwards;
 }
 
-/* Mobile bottom nav safe area */
 .safe-bottom {
   padding-bottom: env(safe-area-inset-bottom, 0);
 }
 
-/* Line clamp utility */
 .line-clamp-3 {
   display: -webkit-box;
   -webkit-line-clamp: 3;

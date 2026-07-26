@@ -100,7 +100,13 @@ export default function Header({ onCartClick }: Props) {
           scrolled ? 'h-0 py-0 opacity-0' : 'h-[32px] opacity-100'
         }`}
       >
-        <span className="bg-gradient-to-r from-gray-500 via-champagne-light to-gray-500 bg-clip-text text-transparent">
+        <span
+          className="bg-clip-text text-transparent animate-gradient"
+          style={{
+            backgroundImage: 'linear-gradient(90deg, #666, #E8D5B0, #C9A96E, #E8D5B0, #666)',
+            backgroundSize: '200% 200%',
+          }}
+        >
           Livraison offerte dès 50 CHF · Retours gratuits sous 30 jours
         </span>
       </div>

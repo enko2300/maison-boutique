@@ -49,7 +49,11 @@ export default function Checkout() {
     setError('');
     try {
       const { data } = await orderApi.checkout(promoApplied || undefined);
-      setInvoiceUrl(data.invoiceUrl || null);
+      if (data.invoiceUrl) {
+        // Construct full URL for the invoice
+        const fullUrl = `https://maison-boutique-production.up.railway.app${data.invoiceUrl}`;
+        setInvoiceUrl(fullUrl);
+      }
       fetchCart();
     } catch (e: any) {
       setError(e.response?.data?.error || 'Erreur lors du paiement');
@@ -105,13 +109,25 @@ export default function Checkout() {
           </div>
         </div>
 
-        {/* PDF iframe preview */}
-        <div className="bg-gray-50" style={{ height: '500px' }}>
-          <iframe
-            src={invoiceUrl}
-            className="w-full h-full border-0"
-            title="Facture"
-          />
+        {/* Invoice preview */}
+        <div className="bg-cream p-8 text-center">
+          <div className="w-20 h-24 mx-auto bg-white rounded-xl border border-gray-200 flex items-center justify-center mb-4 shadow-sm">
+            <svg className="w-10 h-10 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+          </div>
+          <p className="text-[13px] font-medium text-charcoal mb-1">Votre facture est prête</p>
+          <p className="text-[11px] text-gray-400 font-light mb-4">Document PDF — prêt à télécharger</p>
+          <a
+            href={invoiceUrl}
+            download
+            className="inline-flex items-center gap-2 px-6 py-2.5 bg-charcoal text-white rounded-full text-[12px] tracking-[0.06em] uppercase font-medium hover:bg-charcoal/90 transition-all"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            Télécharger la facture
+          </a>
         </div>
       </div>
 

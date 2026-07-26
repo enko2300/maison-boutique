@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useAuthStore } from './stores/authStore';
+import { useCartStore } from './stores/cartStore';
 import { useThemeStore } from './stores/themeStore';
 import { useEffect, useState, lazy, Suspense } from 'react';
 import Header from './components/layout/Header';
@@ -45,9 +46,16 @@ function PageLoader() {
 
 function AppContent() {
   const loadUser = useAuthStore(s => s.loadUser);
+  const { user } = useAuthStore();
+  const fetchCart = useCartStore(s => s.fetch);
   const theme = useThemeStore(s => s.theme);
   const [cartOpen, setCartOpen] = useState(false);
   useEffect(() => { loadUser(); }, []);
+
+  // Fetch cart when user is loaded
+  useEffect(() => {
+    if (user) fetchCart();
+  }, [user]);
 
   // Apply theme class to html element
   useEffect(() => {
