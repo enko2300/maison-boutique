@@ -1,0 +1,1 @@
+import{a as e}from"./index-DhCN82Mi.js";var t={products:{list:()=>e.get(`/admin/products`),create:t=>e.post(`/admin/products`,t),update:(t,n)=>e.put(`/admin/products/${t}`,n),delete:t=>e.delete(`/admin/products/${t}`)},orders:{list:()=>e.get(`/admin/orders`),updateStatus:(t,n)=>e.put(`/admin/orders/${t}/status`,{status:n})},stats:()=>e.get(`/admin/stats`)};export{t};

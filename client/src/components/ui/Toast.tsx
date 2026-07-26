@@ -1,5 +1,4 @@
 import { create } from 'zustand';
-import { ReactNode } from 'react';
 
 interface Toast {
   id: string;
@@ -25,7 +24,7 @@ export const useToastStore = create<ToastState>((set, get) => ({
   remove: (id) => set({ toasts: get().toasts.filter(t => t.id !== id) }),
 }));
 
-const icons: Record<string, JSX.Element> = {
+const icons: Record<string, React.JSX.Element> = {
   cart: (
     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />

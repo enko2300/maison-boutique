@@ -15,7 +15,7 @@ export default function Checkout() {
     setError('');
     try {
       const { data } = await orderApi.checkout();
-      setInvoiceUrl(data.invoiceUrl);
+      setInvoiceUrl(data.invoiceUrl || null);
       fetchCart();
     } catch (e: any) {
       setError(e.response?.data?.error || 'Erreur lors du paiement');

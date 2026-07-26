@@ -1,0 +1,1 @@
+import{a as e}from"./index-DhCN82Mi.js";var t={list:()=>e.get(`/orders`),checkout:()=>e.post(`/orders/checkout`)};export{t};

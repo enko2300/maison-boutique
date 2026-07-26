@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
+import type { JSX } from 'react';
 
 const paymentIcons: Record<string, JSX.Element> = {
   visa: (

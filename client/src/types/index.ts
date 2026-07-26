@@ -16,6 +16,7 @@ export interface Product {
   colors: string[];
   stock: number;
   featured: boolean;
+  createdAt?: string;
 }
 
 export interface CartItem {

@@ -1,4 +1,4 @@
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useAuthStore } from '../../stores/authStore';
 import { useCartStore } from '../../stores/cartStore';
 import { useThemeStore } from '../../stores/themeStore';
@@ -23,14 +23,12 @@ export default function Header({ onCartClick }: Props) {
   const { user, logout } = useAuthStore();
   const count = useCartStore(s => s.count);
   const { theme, toggle: toggleTheme } = useThemeStore();
-  const navigate = useNavigate();
   const location = useLocation();
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [megaOpen, setMegaOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
   const [prevCount, setPrevCount] = useState(0);
   const [badgePop, setBadgePop] = useState(false);
 
@@ -91,15 +89,6 @@ export default function Header({ onCartClick }: Props) {
     }
     setPrevCount(c);
   }, [count()]);
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      navigate(`/products?search=${encodeURIComponent(searchQuery.trim())}`);
-      setSearchOpen(false);
-      setSearchQuery('');
-    }
-  };
 
   const isActive = (path: string) => location.pathname === path;
 
