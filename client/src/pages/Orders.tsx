@@ -40,7 +40,7 @@ export default function Orders() {
         <div className="space-y-4">
           {orders.map(order => {
             const st = statusLabels[order.status] || { label: order.status, cls: 'bg-gray-50 text-gray-600 border-gray-200' };
-            const invoiceUrl = `/invoices/facture-${order.id.slice(-8)}.pdf`;
+            const invoiceUrl = `/api/invoices/facture-${order.id.slice(-8)}.pdf`;
 
             return (
               <div key={order.id} className="bg-white rounded-2xl border border-gray-100 overflow-hidden">

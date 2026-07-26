@@ -17,6 +17,7 @@ import promoRoutes from './routes/promo.js';
 import reviewRoutes from './routes/reviews.js';
 import wishlistRoutes from './routes/wishlist.js';
 import uploadRoutes from './routes/upload.js';
+import invoiceRoutes from './routes/invoices.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -101,8 +102,7 @@ app.use('/api/', apiLimiter);
 app.use('/api/auth', authLimiter);
 app.use('/api/contact', contactLimiter);
 
-// Serve static files (invoices, uploads)
-app.use('/invoices', express.static(path.join(process.cwd(), 'invoices')));
+// Serve uploads as static files
 app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
 
 // API Routes
@@ -116,6 +116,7 @@ app.use('/api/promo', promoRoutes);
 app.use('/api', reviewRoutes);
 app.use('/api/wishlist', wishlistRoutes);
 app.use('/api/upload', uploadRoutes);
+app.use('/api/invoices', invoiceRoutes);
 
 // Health check
 app.get('/api/health', (_req, res) => {

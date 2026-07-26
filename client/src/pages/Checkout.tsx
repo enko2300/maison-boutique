@@ -50,7 +50,9 @@ export default function Checkout() {
     try {
       const { data } = await orderApi.checkout(promoApplied || undefined);
       if (data.invoiceUrl) {
-        setInvoiceUrl(data.invoiceUrl);
+        // Convert /invoices/filename.pdf to /api/invoices/filename.pdf for auth
+        const protectedUrl = data.invoiceUrl.replace('/invoices/', '/api/invoices/');
+        setInvoiceUrl(protectedUrl);
       }
       fetchCart();
     } catch (e: any) {
