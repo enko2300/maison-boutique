@@ -3,6 +3,7 @@ import { useAuthStore } from '../../stores/authStore';
 import { useCartStore } from '../../stores/cartStore';
 import { useThemeStore } from '../../stores/themeStore';
 import SearchAutocomplete from '../ui/SearchAutocomplete';
+import CurrencySelector from '../ui/CurrencySelector';
 import { useState, useEffect, useRef } from 'react';
 
 const categories = [
@@ -175,6 +176,8 @@ export default function Header({ onCartClick }: Props) {
                   </svg>
                 )}
               </button>
+
+              <CurrencySelector />
 
               <button
                 onClick={onCartClick}

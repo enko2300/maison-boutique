@@ -8,6 +8,7 @@ import { useToastStore } from '../components/ui/Toast';
 import { ProductDetailSkeleton } from '../components/ui/Skeletons';
 import Breadcrumbs from '../components/ui/Breadcrumbs';
 import ImageGallery from '../components/products/ImageGallery';
+import { useFormatPrice } from '../hooks/useFormatPrice';
 import QuantitySelector from '../components/ui/QuantitySelector';
 import RelatedProducts from '../components/products/RelatedProducts';
 import QuickView from '../components/products/QuickView';
@@ -23,6 +24,7 @@ export default function ProductDetail() {
   const showToast = useToastStore(s => s.show);
   const toggleWishlist = useWishlistStore(s => s.toggle);
   const isWished = useWishlistStore(s => s.has(id || ''));
+  const { format } = useFormatPrice();
   const [selectedSize, setSelectedSize] = useState('');
   const [selectedColor, setSelectedColor] = useState('');
   const [quantity, setQuantity] = useState(1);
@@ -84,7 +86,7 @@ export default function ProductDetail() {
         <div className="flex flex-col">
           <p className="text-champagne text-[11px] font-medium tracking-[0.2em] uppercase mb-3">{product.category}</p>
           <h1 className="text-2xl md:text-3xl font-light tracking-[-0.02em] text-charcoal leading-tight">{product.name}</h1>
-          <p className="text-xl font-medium text-charcoal mt-4">{product.price.toFixed(2)} €</p>
+          <p className="text-xl font-medium text-charcoal mt-4">{format(product.price)}</p>
           <p className="text-gray-400 mt-5 text-[14px] font-light leading-relaxed">{product.description}</p>
 
           {/* Sizes */}

@@ -2,11 +2,13 @@ import { useNavigate } from 'react-router-dom';
 import { useCartStore } from '../stores/cartStore';
 import { orderApi } from '../api/orders';
 import { promoApi } from '../api/promo';
+import { useFormatPrice } from '../hooks/useFormatPrice';
 import { useState } from 'react';
 
 export default function Checkout() {
   const { items, total, fetch: fetchCart } = useCartStore();
   const navigate = useNavigate();
+  const { format } = useFormatPrice();
   const [loading, setLoading] = useState(false);
   const [invoiceUrl, setInvoiceUrl] = useState<string | null>(null);
   const [error, setError] = useState('');
@@ -158,7 +160,7 @@ export default function Checkout() {
               )}
               {' '}× {item.quantity}
             </span>
-            <span className="font-medium text-charcoal">{(item.product.price * item.quantity).toFixed(2)} &euro;</span>
+            <span className="font-medium text-charcoal">{format(item.product.price * item.quantity)}</span>
           </div>
         ))}
 
@@ -171,7 +173,7 @@ export default function Checkout() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
                 <span className="text-[13px] font-medium text-green-700">{promoApplied}</span>
-                <span className="text-[12px] text-green-600">-{promoDiscount.toFixed(2)} €</span>
+                <span className="text-[12px] text-green-600">-{format(promoDiscount)}</span>
               </div>
               <button onClick={handleRemovePromo} className="text-[12px] text-green-600 hover:text-green-800 font-medium">Retirer</button>
             </div>
@@ -203,17 +205,17 @@ export default function Checkout() {
         <div className="border-t border-gray-100 pt-4 space-y-2">
           <div className="flex justify-between text-[13px]">
             <span className="text-gray-400 font-light">Sous-total</span>
-            <span className="text-gray-600">{total().toFixed(2)} €</span>
+            <span className="text-gray-600">{format(total())}</span>
           </div>
           {promoDiscount > 0 && (
             <div className="flex justify-between text-[13px]">
               <span className="text-green-600 font-light">Réduction</span>
-              <span className="text-green-600">-{promoDiscount.toFixed(2)} €</span>
+              <span className="text-green-600">-{format(promoDiscount)}</span>
             </div>
           )}
           <div className="flex justify-between pt-2 border-t border-gray-100">
             <span className="text-[11px] tracking-[0.08em] uppercase text-gray-400 font-medium">Total</span>
-            <span className="text-lg font-medium text-charcoal">{finalTotal.toFixed(2)} €</span>
+            <span className="text-lg font-medium text-charcoal">{format(finalTotal)}</span>
           </div>
         </div>
       </div>
@@ -241,7 +243,7 @@ export default function Checkout() {
         disabled={loading}
         className="w-full mt-6 bg-charcoal text-white py-3.5 rounded-full text-[12px] tracking-[0.08em] uppercase font-medium hover:bg-charcoal/90 transition-all duration-300 disabled:opacity-50"
       >
-        {loading ? 'Traitement en cours...' : `Confirmer et payer ${finalTotal.toFixed(2)} €`}
+        {loading ? 'Traitement en cours...' : `Confirmer et payer ${format(finalTotal)}`}
       </button>
 
       <p className="text-center text-[11px] text-gray-400 font-light mt-4">

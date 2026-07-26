@@ -4,6 +4,7 @@ import { useCartStore } from '../../stores/cartStore';
 import { useAuthStore } from '../../stores/authStore';
 import { useWishlistStore } from '../../stores/wishlistStore';
 import { useToastStore } from '../ui/Toast';
+import { useFormatPrice } from '../../hooks/useFormatPrice';
 import type { Product } from '../../types';
 
 interface Props {
@@ -18,6 +19,7 @@ export default function QuickView({ product, onClose }: Props) {
   const toggleWishlist = useWishlistStore(s => s.toggle);
   const isWished = useWishlistStore(s => s.has(product?.id || ''));
   const showToast = useToastStore(s => s.show);
+  const { format } = useFormatPrice();
 
   const [selectedSize, setSelectedSize] = useState('');
   const [selectedColor, setSelectedColor] = useState('');
@@ -59,7 +61,7 @@ export default function QuickView({ product, onClose }: Props) {
         <div className="w-full md:w-1/2 p-6 md:p-8 flex flex-col overflow-y-auto">
           <p className="text-champagne text-[10px] font-medium tracking-[0.2em] uppercase mb-2">{product.category}</p>
           <h2 className="text-xl font-medium text-charcoal leading-tight">{product.name}</h2>
-          <p className="text-lg font-medium text-charcoal mt-3">{product.price.toFixed(2)} €</p>
+          <p className="text-lg font-medium text-charcoal mt-3">{format(product.price)}</p>
           <p className="text-[13px] text-gray-400 font-light mt-3 leading-relaxed line-clamp-3">{product.description}</p>
 
           {/* Sizes */}

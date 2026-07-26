@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import type { Product } from '../../types';
 import { useWishlistStore } from '../../stores/wishlistStore';
 import { useToastStore } from '../ui/Toast';
+import { useFormatPrice } from '../../hooks/useFormatPrice';
 
 interface Props {
   product: Product;
@@ -12,6 +13,7 @@ export default function ProductCard({ product, onQuickView }: Props) {
   const toggle = useWishlistStore(s => s.toggle);
   const isWished = useWishlistStore(s => s.has(product.id));
   const showToast = useToastStore(s => s.show);
+  const { format } = useFormatPrice();
 
   const handleWishlist = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -64,7 +66,7 @@ export default function ProductCard({ product, onQuickView }: Props) {
       <div className="px-0.5">
         <p className="text-[11px] text-champagne tracking-[0.08em] uppercase font-medium mb-1">{product.category}</p>
         <h3 className="text-[13px] font-medium text-charcoal group-hover:text-champagne transition-colors duration-300 leading-snug">{product.name}</h3>
-        <p className="text-[13px] text-gray-400 font-light mt-1.5 tracking-wide">{product.price.toFixed(2)} €</p>
+        <p className="text-[13px] text-gray-400 font-light mt-1.5 tracking-wide">{format(product.price)}</p>
       </div>
     </Link>
   );

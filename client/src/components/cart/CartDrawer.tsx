@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCartStore } from '../../stores/cartStore';
 import { useAuthStore } from '../../stores/authStore';
+import { useFormatPrice } from '../../hooks/useFormatPrice';
 
 interface Props {
   open: boolean;
@@ -11,6 +12,7 @@ interface Props {
 export default function CartDrawer({ open, onClose }: Props) {
   const { items, fetch, total, updateQuantity, removeItem } = useCartStore();
   const { user } = useAuthStore();
+  const { format } = useFormatPrice();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -108,7 +110,7 @@ export default function CartDrawer({ open, onClose }: Props) {
                         <span className="w-6 text-center text-[12px] font-medium text-charcoal">{item.quantity}</span>
                         <button onClick={() => updateQuantity(item.id, item.quantity + 1)} className="w-7 h-7 flex items-center justify-center text-gray-400 hover:text-charcoal transition-colors text-sm">+</button>
                       </div>
-                      <p className="text-[13px] font-medium text-charcoal">{(item.product.price * item.quantity).toFixed(2)} €</p>
+                      <p className="text-[13px] font-medium text-charcoal">{format(item.product.price * item.quantity)}</p>
                     </div>
                   </div>
                 </div>
@@ -122,7 +124,7 @@ export default function CartDrawer({ open, onClose }: Props) {
           <div className="border-t border-gray-100 px-6 py-5 space-y-4">
             <div className="flex items-center justify-between">
               <span className="text-[12px] tracking-[0.06em] uppercase text-gray-400 font-light">Sous-total</span>
-              <span className="text-lg font-medium text-charcoal">{total().toFixed(2)} €</span>
+              <span className="text-lg font-medium text-charcoal">{format(total())}</span>
             </div>
             <p className="text-[11px] text-gray-400 font-light">Livraison calculée à la caisse</p>
             <button
