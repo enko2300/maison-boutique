@@ -31,9 +31,13 @@ function drawRule(doc: PDFKit.PDFDocument, x1: number, y: number, x2: number, co
 
 export function generateInvoice(data: InvoiceData): Promise<string> {
   return new Promise((resolve, reject) => {
+    const invoicesDir = path.join(process.cwd(), 'invoices');
+    if (!fs.existsSync(invoicesDir)) {
+      fs.mkdirSync(invoicesDir, { recursive: true });
+    }
     const doc = new PDFDocument({ size: 'A4', margin: 50, bufferPages: true });
     const fileName = `facture-${data.orderId.slice(-8)}.pdf`;
-    const filePath = path.join(process.cwd(), 'invoices', fileName);
+    const filePath = path.join(invoicesDir, fileName);
     const stream = fs.createWriteStream(filePath);
 
     doc.pipe(stream);
