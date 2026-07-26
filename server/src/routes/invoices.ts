@@ -7,11 +7,12 @@ import fs from 'fs';
 const router = Router();
 router.use(authMiddleware);
 
-// Serve invoice PDF - only if user owns the order
+// Serve invoice PDF - owner or admin can access
 router.get('/:filename', async (req, res) => {
   try {
     const filename = String(req.params.filename);
-    
+    const isAdmin = req.user!.role === 'ADMIN';
+
     // Extract order ID from filename: facture-{last8chars}.pdf
     const match = filename.match(/^facture-([a-z0-9]+)\.pdf$/);
     if (!match) {
@@ -20,13 +21,19 @@ router.get('/:filename', async (req, res) => {
 
     const orderIdSuffix = match[1];
 
-    // Find the order that matches this invoice
-    const orders = await prisma.order.findMany({
-      where: { userId: req.user!.userId },
-      select: { id: true },
-    });
+    // Admin can access any invoice, regular user only their own
+    let matchingOrder;
+    if (isAdmin) {
+      const allOrders = await prisma.order.findMany({ select: { id: true } });
+      matchingOrder = allOrders.find(o => o.id.endsWith(orderIdSuffix));
+    } else {
+      const userOrders = await prisma.order.findMany({
+        where: { userId: req.user!.userId },
+        select: { id: true },
+      });
+      matchingOrder = userOrders.find(o => o.id.endsWith(orderIdSuffix));
+    }
 
-    const matchingOrder = orders.find(o => o.id.endsWith(orderIdSuffix));
     if (!matchingOrder) {
       return res.status(403).json({ error: 'Accès non autorisé' });
     }
