@@ -10,7 +10,7 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-const FROM = process.env.EMAIL_FROM || 'MAISON. <noreply@maison-boutique.com>';
+const FROM = process.env.EMAIL_FROM || 'Bouclor <noreply@bouclor.com>';
 
 function orderConfirmationHtml(userName: string, orderId: string, items: any[], total: number, discount: number, invoiceUrl: string) {
   const itemsHtml = items.map(i => `
@@ -28,7 +28,7 @@ function orderConfirmationHtml(userName: string, orderId: string, items: any[], 
     <body style="margin:0;padding:0;background:#FAF8F5;font-family:'Helvetica Neue',Arial,sans-serif;">
       <div style="max-width:600px;margin:0 auto;padding:40px 20px;">
         <div style="text-align:center;margin-bottom:32px;">
-          <h1 style="font-size:28px;font-weight:300;color:#1A1A1A;letter-spacing:-0.5px;">MAISON<span style="color:#C9A96E;">.</span></h1>
+          <h1 style="font-size:28px;font-weight:300;color:#1A1A1A;letter-spacing:-0.5px;">BOUCLOR</h1>
         </div>
         <div style="background:white;border-radius:16px;padding:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06);">
           <h2 style="font-size:20px;font-weight:500;color:#1A1A1A;margin:0 0 8px;">Merci pour votre commande !</h2>
@@ -52,7 +52,7 @@ function orderConfirmationHtml(userName: string, orderId: string, items: any[], 
             <a href="${invoiceUrl}" style="display:inline-block;background:#1A1A1A;color:white;padding:12px 24px;border-radius:24px;text-decoration:none;font-size:12px;text-transform:uppercase;letter-spacing:0.08em;">Voir la facture</a>
           </div>
         </div>
-        <p style="text-align:center;font-size:12px;color:#999;margin-top:24px;">MAISON. — Boutique de mode haut de gamme</p>
+        <p style="text-align:center;font-size:12px;color:#999;margin-top:24px;">BOUCLOR — Boutique de mode haut de gamme</p>
       </div>
     </body>
     </html>
@@ -74,7 +74,7 @@ export const emailService = {
       await transporter.sendMail({
         from: FROM,
         to,
-        subject: `MAISON. — Confirmation de commande n°${orderId.slice(-8).toUpperCase()}`,
+        subject: `BOUCLOR — Confirmation de commande n°${orderId.slice(-8).toUpperCase()}`,
         html: orderConfirmationHtml(userName, orderId, items, total, discount, fullUrl),
       });
     } catch (e) {
@@ -87,12 +87,12 @@ export const emailService = {
       await transporter.sendMail({
         from: FROM,
         to,
-        subject: `MAISON. — Nous avons reçu votre message`,
+        subject: `BOUCLOR — Nous avons reçu votre message`,
         html: `
           <div style="max-width:600px;margin:0 auto;padding:40px 20px;font-family:'Helvetica Neue',Arial,sans-serif;">
             <h2 style="font-size:20px;color:#1A1A1A;">Merci pour votre message</h2>
             <p style="font-size:14px;color:#666;">Nous avons bien reçu votre demande concernant "${subject}". Notre équipe vous répondra sous 24h.</p>
-            <p style="font-size:12px;color:#999;margin-top:24px;">MAISON. — Boutique de mode</p>
+            <p style="font-size:12px;color:#999;margin-top:24px;">BOUCLOR — Boutique de mode</p>
           </div>
         `,
       });

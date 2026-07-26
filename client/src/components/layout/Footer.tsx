@@ -128,7 +128,7 @@ export default function Footer() {
           {/* Brand */}
           <div className="col-span-2 md:col-span-1">
             <Link to="/" className="inline-block">
-              <span className="text-xl font-semibold text-white tracking-[-0.02em]">MAISON</span>
+              <span className="text-xl font-semibold text-white tracking-[-0.02em]">Bouclor</span>
               <span className="text-xl font-light text-champagne">.</span>
             </Link>
             <p className="text-[13px] text-gray-500 mt-5 leading-relaxed font-light max-w-[240px]">
@@ -225,7 +225,7 @@ export default function Footer() {
 
           {/* Copyright */}
           <div className="mt-6 pt-5 border-t border-white/[0.04] flex flex-col md:flex-row items-center justify-between gap-3">
-            <p className="text-[11px] text-gray-600 font-light tracking-wide">&copy; {new Date().getFullYear()} MAISON. Tous droits réservés.</p>
+            <p className="text-[11px] text-gray-600 font-light tracking-wide">&copy; {new Date().getFullYear()} Bouclor. Tous droits réservés.</p>
             <div className="flex gap-5">
               <a href="#" className="text-[11px] text-gray-600 hover:text-gray-400 transition-colors font-light tracking-wide">CGV</a>
               <a href="#" className="text-[11px] text-gray-600 hover:text-gray-400 transition-colors font-light tracking-wide">Confidentialité</a>

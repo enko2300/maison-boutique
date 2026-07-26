@@ -113,7 +113,7 @@ export default function Header({ onCartClick }: Props) {
           <div className="flex items-center justify-between h-[64px]">
             <div className="flex items-center gap-10">
               <Link to="/" className="flex items-baseline gap-0.5 group">
-                <span className="text-[22px] font-semibold tracking-[-0.04em] text-charcoal transition-colors duration-300 group-hover:text-champagne">MAISON</span>
+                <span className="text-[22px] font-semibold tracking-[-0.04em] text-charcoal transition-colors duration-300 group-hover:text-champagne">Bouclor</span>
                 <span className="text-[22px] font-light text-champagne">.</span>
               </Link>
 

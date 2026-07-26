@@ -49,9 +49,9 @@ export function generateInvoice(data: InvoiceData): Promise<string> {
 
     // Brand
     doc.font('Helvetica-Bold').fontSize(28).fillColor(INK);
-    doc.text('MAISON', M, y, { continued: true });
+    doc.text('BOUCLOR', M, y, { continued: true });
     doc.font('Helvetica').fontSize(28).fillColor(MUTED);
-    doc.text('.', { continued: false });
+    doc.text('', { continued: false });
 
     y += 36;
     doc.font('Helvetica').fontSize(7).fillColor(MUTED);
@@ -107,14 +107,14 @@ export function generateInvoice(data: InvoiceData): Promise<string> {
     doc.text('EXPÉDITEUR', M, y, { characterSpacing: 2 });
     y += 14;
     doc.font('Helvetica-Bold').fontSize(9).fillColor(INK);
-    doc.text('MAISON.', M, y);
+    doc.text('BOUCLOR', M, y);
     y += 13;
     doc.font('Helvetica').fontSize(8).fillColor(MUTED);
     doc.text('12 Rue de la Paix', M, y);
     y += 11;
     doc.text('75002 Paris, France', M, y);
     y += 11;
-    doc.text('contact@maison.com', M, y);
+    doc.text('contact@bouclor.com', M, y);
     y += 11;
     doc.text('+33 1 23 45 67 89', M, y);
 
@@ -249,7 +249,7 @@ export function generateInvoice(data: InvoiceData): Promise<string> {
     y += 11;
     doc.text('• Livraison gratuite dès 50€ d\'achat. Délai de livraison : 3 à 5 jours ouvrés.', M, y, { width: contentW });
     y += 11;
-    doc.text('• Pour toute question, contactez-nous à contact@maison.com ou au +33 1 23 45 67 89.', M, y, { width: contentW });
+    doc.text('• Pour toute question, contactez-nous à contact@bouclor.com ou au +33 1 23 45 67 89.', M, y, { width: contentW });
 
     // ═══════════════════════════════════════════════════════
     // FOOTER
@@ -261,9 +261,9 @@ export function generateInvoice(data: InvoiceData): Promise<string> {
     y = footerY + 14;
 
     doc.font('Helvetica').fontSize(7).fillColor(MUTED);
-    doc.text('MAISON. — 12 Rue de la Paix, 75002 Paris — SIRET 123 456 789 00012', M, y, { width: contentW, align: 'center' });
+    doc.text('BOUCLOR — 12 Rue de la Paix, 75002 Paris — SIRET 123 456 789 00012', M, y, { width: contentW, align: 'center' });
     y += 11;
-    doc.text('www.maison.com — contact@maison.com', M, y, { width: contentW, align: 'center' });
+    doc.text('www.bouclor.com — contact@bouclor.com', M, y, { width: contentW, align: 'center' });
 
     y += 20;
     doc.font('Helvetica-Bold').fontSize(8).fillColor(INK);

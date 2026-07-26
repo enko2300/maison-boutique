@@ -8,7 +8,7 @@ interface SEOProps {
   type?: string;
 }
 
-const SITE_NAME = 'MAISON.';
+const SITE_NAME = 'Bouclor';
 const DEFAULT_DESC = 'Boutique de mode haut de gamme — vêtements, accessoires, pièces intemporelles.';
 
 export default function SEOHead({ title, description, image, url, type = 'website' }: SEOProps) {
