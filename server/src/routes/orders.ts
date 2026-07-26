@@ -31,7 +31,7 @@ router.get('/', async (req, res) => {
 
 router.post('/checkout', async (req, res) => {
   try {
-    const { promoCode } = req.body;
+    const promoCode = req.body?.promoCode || null;
     const cartItems = await prisma.cartItem.findMany({
       where: { userId: req.user!.userId },
       include: { product: true },
